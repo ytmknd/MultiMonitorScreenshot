@@ -1,0 +1,32 @@
+# ===== Visual Studio / IDE =====
+.vs/
+*.user
+*.suo
+
+# ===== Build artifacts =====
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.exe
+*.pdb
+
+# ===== Inno Setup output =====
+installer/Output/
+
+# ===== NuGet =====
+*.nupkg
+packages/
+
+# ===== Local tooling / config (contains local paths & account info) =====
+.claude/
+.copilot/
+
+# ===== Misc local-only assets =====
+generated-images/
+
+# ===== OS =====
+Thumbs.db
+desktop.ini
+.DS_Store
