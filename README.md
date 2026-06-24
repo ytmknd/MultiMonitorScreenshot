@@ -1,4 +1,4 @@
-# MultimonitorScreenShot
+# MultiMonitorScreenshot
 
 A simple **Windows** desktop app for capturing screenshots across multiple monitors — capture an individual display, the primary display, or the entire multi-monitor virtual screen as a single image.
 
@@ -28,19 +28,19 @@ with timestamped filenames such as `Screenshot_20260624_153012_487.png` (millise
 ## Building from source
 
 ```sh
-dotnet build MultimonitorScreenShot/MultimonitorScreenShot.csproj -c Release
+dotnet build MultiMonitorScreenshot/MultiMonitorScreenshot.csproj -c Release
 ```
 
 ### Publishing a self-contained, single-file build
 
 ```sh
-dotnet publish MultimonitorScreenShot/MultimonitorScreenShot.csproj -c Release -p:PublishProfile=FolderProfile
+dotnet publish MultiMonitorScreenshot/MultiMonitorScreenshot.csproj -c Release -p:PublishProfile=FolderProfile
 ```
 
 Output is written to:
 
 ```
-MultimonitorScreenShot/bin/Release/net8.0-windows/publish/win-x64/
+MultiMonitorScreenshot/bin/Release/net8.0-windows/publish/win-x64/
 ```
 
 This build is self-contained (the .NET runtime is bundled), so it runs without installing .NET separately.
@@ -53,7 +53,7 @@ An [Inno Setup](https://jrsoftware.org/isinfo.php) script is provided.
 2. Compile the installer:
 
    ```sh
-   "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\MultimonitorScreenShot.iss
+   "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\MultiMonitorScreenshot.iss
    ```
 
 3. The setup executable is generated in `installer\Output\`.

@@ -1,4 +1,4 @@
-namespace MultimonitorScreenShot
+namespace MultiMonitorScreenshot
 {
     internal static class Program
     {

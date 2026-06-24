@@ -1,4 +1,4 @@
-namespace MultimonitorScreenShot
+namespace MultiMonitorScreenshot
 {
     partial class Form1
     {
