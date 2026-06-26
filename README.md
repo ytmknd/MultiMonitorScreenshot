@@ -23,8 +23,10 @@ A simple **Windows** desktop app for capturing screenshots across multiple monit
 Screenshots are saved as PNG files and recordings are saved as MP4 files to:
 
 ```
-%USERPROFILE%\Pictures\スクリーンショット\
+%USERPROFILE%\Pictures\Screenshots\
 ```
+
+The `Pictures` folder is resolved through the Windows known folder API, so its display name may vary by Windows language settings. The app-created subfolder name is always `Screenshots`.
 
 with timestamped filenames such as `Screenshot_20260624_153012_487.png` (millisecond precision avoids overwriting when capturing in quick succession).
 Recordings use names such as `Recording_20260624_153012.mp4`.
@@ -54,13 +56,30 @@ This build is self-contained (the .NET runtime is bundled), so it runs without i
 An [Inno Setup](https://jrsoftware.org/isinfo.php) script is provided.
 
 1. Run the self-contained publish step above.
-2. Compile the installer:
+2. If you want the installer to include ffmpeg, place a Windows x64 `ffmpeg.exe` at:
+
+   ```
+   MultiMonitorScreenshot/ffmpeg.exe
+   ```
+
+   The installer script copies that file into the application folder when it exists. The app looks for `ffmpeg.exe` next to `MultiMonitorScreenshot.exe` first, then falls back to `ffmpeg` on `PATH`.
+
+   If this file is not present when the installer is built, the installer is still created, but MP4 recording will only work on PCs where ffmpeg is already available on `PATH`.
+
+3. Compile the installer:
 
    ```sh
    "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\MultiMonitorScreenshot.iss
    ```
 
-3. The setup executable is generated in `installer\Output\`.
+4. The setup executable is generated in `installer\Output\`.
+
+### ffmpeg packaging notes
+
+- `ffmpeg.exe` is not downloaded by the build or installer script. Download it separately from the ffmpeg project or another trusted distributor before building the installer.
+- For a redistributable installer, prefer bundling `ffmpeg.exe` in the app folder instead of relying on the user's system `PATH`.
+- Check the license terms of the ffmpeg build you redistribute. ffmpeg builds may be GPL or LGPL depending on how they were compiled and which codecs are enabled.
+- The current recorder writes H.264 MP4 through ffmpeg using `libx264`, so use a build that includes that encoder.
 
 ## Tech stack
 
