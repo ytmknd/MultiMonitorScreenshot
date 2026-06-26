@@ -9,9 +9,10 @@
 ;   3) installer\Output\ に Setup 実行ファイルが生成される
 
 #define MyAppName "マルチモニター スクリーンショット"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "MultiMonitorScreenshot"
 #define MyAppExeName "MultiMonitorScreenshot.exe"
+#define MyFfmpegExe "..\MultiMonitorScreenshot\ffmpeg.exe"
 ; .iss からの相対パスで発行フォルダを指定
 #define MyPublishDir "..\MultiMonitorScreenshot\bin\Release\net8.0-windows\publish\win-x64"
 
@@ -45,6 +46,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 ; 発行フォルダの全ファイル (exe + 必要なネイティブ DLL) を含める。pdb は除外。
 Source: "{#MyPublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb"
+Source: "{#MyFfmpegExe}"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

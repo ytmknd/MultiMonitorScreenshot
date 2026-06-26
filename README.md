@@ -10,20 +10,24 @@ A simple **Windows** desktop app for capturing screenshots across multiple monit
 - **Capture all monitors** — captures the full bounding rectangle of every display (the virtual screen) as a **single** combined image.
 - **Quick access** — open the screenshot folder directly from the app.
 
+- **Record MP4 video** - records a selected monitor or all monitors to H.264 MP4 through ffmpeg.
+
 ## Requirements
 
 - Windows (x64)
+- [ffmpeg](https://ffmpeg.org/) - install it on PATH, or place `ffmpeg.exe` next to `MultiMonitorScreenshot.exe`. If `ffmpeg.exe` is placed in the project folder, it is copied to build and publish output automatically.
 - [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) — *not required if you use the self-contained build or the installer, which bundle the runtime.*
 
 ## Where screenshots are saved
 
-Screenshots are saved as PNG files to:
+Screenshots are saved as PNG files and recordings are saved as MP4 files to:
 
 ```
 %USERPROFILE%\Pictures\スクリーンショット\
 ```
 
 with timestamped filenames such as `Screenshot_20260624_153012_487.png` (millisecond precision avoids overwriting when capturing in quick succession).
+Recordings use names such as `Recording_20260624_153012.mp4`.
 
 ## Building from source
 
