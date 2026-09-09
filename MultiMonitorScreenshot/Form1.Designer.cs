@@ -32,7 +32,7 @@ namespace MultiMonitorScreenshot
             screenshotModeButton = new Button();
             videoModeButton = new Button();
             monitorDisplayPanel = new Panel();
-            buttonPanel = new Panel();
+            buttonPanel = new TableLayoutPanel();
             capturePrimaryButton = new Button();
             captureAllButton = new Button();
             stopButton = new Button();
@@ -85,14 +85,22 @@ namespace MultiMonitorScreenshot
             monitorDisplayPanel.Name = "monitorDisplayPanel";
             monitorDisplayPanel.Size = new Size(760, 354);
             monitorDisplayPanel.TabIndex = 1;
+            monitorDisplayPanel.Resize += monitorDisplayPanel_Resize;
             //
             // buttonPanel
             //
             buttonPanel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonPanel.Controls.Add(openFolderButton);
-            buttonPanel.Controls.Add(stopButton);
-            buttonPanel.Controls.Add(captureAllButton);
-            buttonPanel.Controls.Add(capturePrimaryButton);
+            buttonPanel.ColumnCount = 4;
+            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            buttonPanel.RowCount = 1;
+            buttonPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            buttonPanel.Controls.Add(capturePrimaryButton, 0, 0);
+            buttonPanel.Controls.Add(captureAllButton, 1, 0);
+            buttonPanel.Controls.Add(stopButton, 2, 0);
+            buttonPanel.Controls.Add(openFolderButton, 3, 0);
             buttonPanel.Location = new Point(12, 418);
             buttonPanel.Name = "buttonPanel";
             buttonPanel.Size = new Size(760, 50);
@@ -100,10 +108,10 @@ namespace MultiMonitorScreenshot
             //
             // capturePrimaryButton
             //
+            capturePrimaryButton.Dock = DockStyle.Fill;
             capturePrimaryButton.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            capturePrimaryButton.Location = new Point(3, 3);
+            capturePrimaryButton.Margin = new Padding(3);
             capturePrimaryButton.Name = "capturePrimaryButton";
-            capturePrimaryButton.Size = new Size(180, 44);
             capturePrimaryButton.TabIndex = 0;
             capturePrimaryButton.Text = AppStrings.CapturePrimaryButton;
             capturePrimaryButton.UseVisualStyleBackColor = true;
@@ -111,10 +119,10 @@ namespace MultiMonitorScreenshot
             //
             // captureAllButton
             //
+            captureAllButton.Dock = DockStyle.Fill;
             captureAllButton.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            captureAllButton.Location = new Point(189, 3);
+            captureAllButton.Margin = new Padding(3);
             captureAllButton.Name = "captureAllButton";
-            captureAllButton.Size = new Size(180, 44);
             captureAllButton.TabIndex = 1;
             captureAllButton.Text = AppStrings.CaptureAllButton;
             captureAllButton.UseVisualStyleBackColor = true;
@@ -122,11 +130,11 @@ namespace MultiMonitorScreenshot
             //
             // stopButton
             //
+            stopButton.Dock = DockStyle.Fill;
             stopButton.Enabled = false;
             stopButton.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            stopButton.Location = new Point(375, 3);
+            stopButton.Margin = new Padding(3);
             stopButton.Name = "stopButton";
-            stopButton.Size = new Size(180, 44);
             stopButton.TabIndex = 2;
             stopButton.Text = AppStrings.StopButton;
             stopButton.UseVisualStyleBackColor = true;
@@ -134,11 +142,10 @@ namespace MultiMonitorScreenshot
             //
             // openFolderButton
             //
-            openFolderButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            openFolderButton.Dock = DockStyle.Fill;
             openFolderButton.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            openFolderButton.Location = new Point(577, 3);
+            openFolderButton.Margin = new Padding(3);
             openFolderButton.Name = "openFolderButton";
-            openFolderButton.Size = new Size(180, 44);
             openFolderButton.TabIndex = 3;
             openFolderButton.Text = AppStrings.OpenFolderButton;
             openFolderButton.UseVisualStyleBackColor = true;
@@ -178,7 +185,7 @@ namespace MultiMonitorScreenshot
         private Button screenshotModeButton;
         private Button videoModeButton;
         private Panel monitorDisplayPanel;
-        private Panel buttonPanel;
+        private TableLayoutPanel buttonPanel;
         private Button capturePrimaryButton;
         private Button captureAllButton;
         private Button stopButton;

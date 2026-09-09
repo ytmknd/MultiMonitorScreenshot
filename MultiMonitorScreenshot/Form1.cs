@@ -6,6 +6,7 @@ namespace MultiMonitorScreenshot
         private enum CaptureMode { Screenshot, Video }
 
         private List<MonitorPanel> monitorPanels = new List<MonitorPanel>();
+        private Rectangle[] monitorLayoutBounds = Array.Empty<Rectangle>();
         private const int SCALE_FACTOR = 10; // モニター解像度を1/10にスケールして表示
         private const int RECORDING_FPS = 10; // 録画のフレームレート
 
@@ -66,41 +67,18 @@ namespace MultiMonitorScreenshot
             var yCompress = BuildAxisCompressor(screens.Select(s => (s.Bounds.Y, s.Bounds.Bottom)));
 
             // 空白を除去した後の各モニターの矩形
-            var layoutBounds = screens.Select(s => new Rectangle(
+            monitorLayoutBounds = screens.Select(s => new Rectangle(
                 xCompress(s.Bounds.X),
                 yCompress(s.Bounds.Y),
                 xCompress(s.Bounds.Right) - xCompress(s.Bounds.X),
                 yCompress(s.Bounds.Bottom) - yCompress(s.Bounds.Y))).ToArray();
 
-            // 全モニターの範囲を計算（空白除去後の座標で）
-            int minX = layoutBounds.Min(b => b.X);
-            int minY = layoutBounds.Min(b => b.Y);
-            int maxX = layoutBounds.Max(b => b.Right);
-            int maxY = layoutBounds.Max(b => b.Bottom);
-
-            int totalWidth = maxX - minX;
-            int totalHeight = maxY - minY;
-
-            // 表示エリアのサイズに合わせてスケール計算
-            double scaleX = (double)monitorDisplayPanel.Width / totalWidth;
-            double scaleY = (double)monitorDisplayPanel.Height / totalHeight;
-            double scale = Math.Min(scaleX, scaleY) * 0.9; // 余白を持たせるため0.9倍
-
             // 各モニターのパネルを作成
             for (int i = 0; i < screens.Length; i++)
             {
                 var screen = screens[i];
-                var bounds = layoutBounds[i];
                 var panel = new MonitorPanel(screen, i);
 
-                // スケールした座標とサイズを計算
-                int x = (int)((bounds.X - minX) * scale);
-                int y = (int)((bounds.Y - minY) * scale);
-                int width = (int)(bounds.Width * scale);
-                int height = (int)(bounds.Height * scale);
-
-                panel.Location = new Point(x + 10, y + 10);
-                panel.Size = new Size(width, height);
                 panel.BorderStyle = BorderStyle.FixedSingle;
                 panel.Cursor = Cursors.Hand;
                 panel.BackColor = screen.Primary ? Color.LightBlue : Color.LightGray;
@@ -110,6 +88,52 @@ namespace MultiMonitorScreenshot
 
                 monitorDisplayPanel.Controls.Add(panel);
                 monitorPanels.Add(panel);
+            }
+
+            LayoutMonitorPanels();
+        }
+
+        // 表示エリアの現在のサイズに合わせて各モニターパネルの位置・サイズを再計算する。
+        // モニター構成が変わらない限り作成済みのパネルを使い回すため、
+        // ウィンドウのリサイズだけで録画中の状態（色など）を失わずに再レイアウトできる。
+        private void LayoutMonitorPanels()
+        {
+            if (monitorPanels.Count == 0 || monitorLayoutBounds.Length != monitorPanels.Count)
+            {
+                return;
+            }
+
+            int minX = monitorLayoutBounds.Min(b => b.X);
+            int minY = monitorLayoutBounds.Min(b => b.Y);
+            int maxX = monitorLayoutBounds.Max(b => b.Right);
+            int maxY = monitorLayoutBounds.Max(b => b.Bottom);
+
+            int totalWidth = maxX - minX;
+            int totalHeight = maxY - minY;
+
+            if (totalWidth <= 0 || totalHeight <= 0 || monitorDisplayPanel.Width <= 0 || monitorDisplayPanel.Height <= 0)
+            {
+                return;
+            }
+
+            // 表示エリアのサイズに合わせてスケール計算
+            double scaleX = (double)monitorDisplayPanel.Width / totalWidth;
+            double scaleY = (double)monitorDisplayPanel.Height / totalHeight;
+            double scale = Math.Min(scaleX, scaleY) * 0.9; // 余白を持たせるため0.9倍
+
+            for (int i = 0; i < monitorPanels.Count; i++)
+            {
+                var bounds = monitorLayoutBounds[i];
+                var panel = monitorPanels[i];
+
+                // スケールした座標とサイズを計算
+                int x = (int)((bounds.X - minX) * scale);
+                int y = (int)((bounds.Y - minY) * scale);
+                int width = (int)(bounds.Width * scale);
+                int height = (int)(bounds.Height * scale);
+
+                panel.Location = new Point(x + 10, y + 10);
+                panel.Size = new Size(width, height);
             }
         }
 
@@ -646,6 +670,8 @@ namespace MultiMonitorScreenshot
                 MinimizeToTray();
             }
         }
+
+        private void monitorDisplayPanel_Resize(object? sender, EventArgs e) => LayoutMonitorPanels();
     }
 
     // モニター表示用のカスタムパネル
