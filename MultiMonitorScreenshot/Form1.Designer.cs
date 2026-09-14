@@ -177,8 +177,7 @@ namespace MultiMonitorScreenshot
             //
             // Form1
             //
-            AutoScaleDimensions = new SizeF(96F, 96F);
-            AutoScaleMode = AutoScaleMode.Dpi;
+            AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(784, 505);
             Controls.Add(statusLabel);
             Controls.Add(buttonPanel);

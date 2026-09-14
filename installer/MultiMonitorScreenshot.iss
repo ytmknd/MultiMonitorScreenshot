@@ -9,7 +9,7 @@
 ;   3) installer\Output\ に Setup 実行ファイルが生成される
 
 #define MyAppName "マルチモニター スクリーンショット"
-#define MyAppVersion "1.2.3"
+#define MyAppVersion "1.2.4"
 #define MyAppPublisher "MultiMonitorScreenshot"
 #define MyAppExeName "MultiMonitorScreenshot.exe"
 #define MyFfmpegExe "..\MultiMonitorScreenshot\ffmpeg.exe"

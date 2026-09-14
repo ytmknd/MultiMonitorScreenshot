@@ -310,7 +310,7 @@ namespace MultiMonitorScreenshot
                 return;
             }
 
-            if (countdownCheckBox.Checked && !await RunCountdownAsync())
+            if (countdownCheckBox.Checked && !await RunCountdownAsync(new[] { screen }))
             {
                 return;
             }
@@ -340,7 +340,7 @@ namespace MultiMonitorScreenshot
                 return;
             }
 
-            if (countdownCheckBox.Checked && !await RunCountdownAsync())
+            if (countdownCheckBox.Checked && !await RunCountdownAsync(Screen.AllScreens))
             {
                 return;
             }
@@ -367,13 +367,19 @@ namespace MultiMonitorScreenshot
             }
         }
 
-        // 3秒（COUNTDOWN_SECONDS）のカウントダウンをステータス欄に表示してから撮影を行う。
-        // カウントダウン中は録画中と同様に操作を無効化し、二重起動を防ぐ。
+        // 3秒（COUNTDOWN_SECONDS）のカウントダウンをステータス欄と対象モニター中央のオーバーレイに
+        // 表示してから撮影を行う。カウントダウン中は録画中と同様に操作を無効化し、二重起動を防ぐ。
         // フォームが閉じられる等で継続できなくなった場合は false を返す。
-        private async Task<bool> RunCountdownAsync()
+        private async Task<bool> RunCountdownAsync(IEnumerable<Screen> targetScreens)
         {
             isCountingDown = true;
             UpdateControlsForCountdownState(true);
+
+            var overlays = targetScreens.Select(s => new CountdownOverlayForm(s)).ToList();
+            foreach (var overlay in overlays)
+            {
+                overlay.Show();
+            }
 
             try
             {
@@ -381,6 +387,12 @@ namespace MultiMonitorScreenshot
                 {
                     statusLabel.Text = AppStrings.StatusCountdown(secondsLeft);
                     statusLabel.ForeColor = Color.DarkOrange;
+
+                    foreach (var overlay in overlays)
+                    {
+                        overlay.SetNumber(secondsLeft.ToString());
+                    }
+
                     await Task.Delay(1000);
 
                     if (IsDisposed)
@@ -393,6 +405,12 @@ namespace MultiMonitorScreenshot
             }
             finally
             {
+                foreach (var overlay in overlays)
+                {
+                    overlay.Close();
+                    overlay.Dispose();
+                }
+
                 isCountingDown = false;
                 if (!IsDisposed)
                 {
