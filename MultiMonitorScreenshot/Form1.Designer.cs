@@ -31,6 +31,7 @@ namespace MultiMonitorScreenshot
             modePanel = new Panel();
             screenshotModeButton = new Button();
             videoModeButton = new Button();
+            countdownCheckBox = new CheckBox();
             monitorDisplayPanel = new Panel();
             buttonPanel = new TableLayoutPanel();
             capturePrimaryButton = new Button();
@@ -47,6 +48,7 @@ namespace MultiMonitorScreenshot
             modePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             modePanel.Controls.Add(screenshotModeButton);
             modePanel.Controls.Add(videoModeButton);
+            modePanel.Controls.Add(countdownCheckBox);
             modePanel.Location = new Point(12, 12);
             modePanel.Name = "modePanel";
             modePanel.Size = new Size(760, 40);
@@ -75,6 +77,17 @@ namespace MultiMonitorScreenshot
             videoModeButton.Text = AppStrings.VideoModeButton;
             videoModeButton.UseVisualStyleBackColor = true;
             videoModeButton.Click += videoModeButton_Click;
+            //
+            // countdownCheckBox
+            //
+            countdownCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            countdownCheckBox.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            countdownCheckBox.Location = new Point(570, 10);
+            countdownCheckBox.Name = "countdownCheckBox";
+            countdownCheckBox.Size = new Size(190, 24);
+            countdownCheckBox.TabIndex = 2;
+            countdownCheckBox.Text = AppStrings.CountdownCheckBox;
+            countdownCheckBox.UseVisualStyleBackColor = true;
             //
             // monitorDisplayPanel
             //
@@ -164,8 +177,8 @@ namespace MultiMonitorScreenshot
             //
             // Form1
             //
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(784, 505);
             Controls.Add(statusLabel);
             Controls.Add(buttonPanel);
@@ -184,6 +197,7 @@ namespace MultiMonitorScreenshot
         private Panel modePanel;
         private Button screenshotModeButton;
         private Button videoModeButton;
+        private CheckBox countdownCheckBox;
         private Panel monitorDisplayPanel;
         private TableLayoutPanel buttonPanel;
         private Button capturePrimaryButton;

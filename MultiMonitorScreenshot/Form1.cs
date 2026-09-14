@@ -19,6 +19,9 @@ namespace MultiMonitorScreenshot
         private ToolStripMenuItem? trayRecordToggleItem;
         private bool isClosingToExit;
 
+        private const int COUNTDOWN_SECONDS = 3;
+        private bool isCountingDown;
+
         public Form1()
         {
             InitializeComponent();
@@ -300,8 +303,18 @@ namespace MultiMonitorScreenshot
 
         // ===== スクリーンショット =====
 
-        private void CaptureScreen(Screen screen)
+        private async void CaptureScreen(Screen screen)
         {
+            if (isCountingDown)
+            {
+                return;
+            }
+
+            if (countdownCheckBox.Checked && !await RunCountdownAsync())
+            {
+                return;
+            }
+
             try
             {
                 var bounds = screen.Bounds;
@@ -320,8 +333,18 @@ namespace MultiMonitorScreenshot
             }
         }
 
-        private void CaptureAllScreens()
+        private async void CaptureAllScreens()
         {
+            if (isCountingDown)
+            {
+                return;
+            }
+
+            if (countdownCheckBox.Checked && !await RunCountdownAsync())
+            {
+                return;
+            }
+
             try
             {
                 // 全モニターを囲む矩形（仮想スクリーン全体）を1枚でキャプチャする
@@ -341,6 +364,55 @@ namespace MultiMonitorScreenshot
             {
                 statusLabel.Text = AppStrings.StatusError(ex.Message);
                 statusLabel.ForeColor = Color.Red;
+            }
+        }
+
+        // 3秒（COUNTDOWN_SECONDS）のカウントダウンをステータス欄に表示してから撮影を行う。
+        // カウントダウン中は録画中と同様に操作を無効化し、二重起動を防ぐ。
+        // フォームが閉じられる等で継続できなくなった場合は false を返す。
+        private async Task<bool> RunCountdownAsync()
+        {
+            isCountingDown = true;
+            UpdateControlsForCountdownState(true);
+
+            try
+            {
+                for (int secondsLeft = COUNTDOWN_SECONDS; secondsLeft >= 1; secondsLeft--)
+                {
+                    statusLabel.Text = AppStrings.StatusCountdown(secondsLeft);
+                    statusLabel.ForeColor = Color.DarkOrange;
+                    await Task.Delay(1000);
+
+                    if (IsDisposed)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            finally
+            {
+                isCountingDown = false;
+                if (!IsDisposed)
+                {
+                    UpdateControlsForCountdownState(false);
+                }
+            }
+        }
+
+        // カウントダウン中は撮影・録画・モード切替の操作を無効化する。
+        private void UpdateControlsForCountdownState(bool counting)
+        {
+            capturePrimaryButton.Enabled = !counting;
+            captureAllButton.Enabled = !counting;
+            screenshotModeButton.Enabled = !counting;
+            videoModeButton.Enabled = !counting;
+            countdownCheckBox.Enabled = !counting;
+
+            foreach (var panel in monitorPanels)
+            {
+                panel.Enabled = !counting;
             }
         }
 
@@ -669,6 +741,10 @@ namespace MultiMonitorScreenshot
             {
                 MinimizeToTray();
             }
+
+            // DPIが異なるモニター間をドラッグ移動した際、モニターパネルの再配置が
+            // monitorDisplayPanel.Resize だけでは追従しきれない場合があるための保険。
+            LayoutMonitorPanels();
         }
 
         private void monitorDisplayPanel_Resize(object? sender, EventArgs e) => LayoutMonitorPanels();

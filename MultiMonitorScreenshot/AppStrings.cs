@@ -24,6 +24,7 @@ namespace MultiMonitorScreenshot
         public static string RecordAllButton      => IsJapanese ? "全モニターを録画"      : "Record All";
         public static string StopButton           => IsJapanese ? "■ 停止"               : "■ Stop";
         public static string OpenFolderButton     => IsJapanese ? "フォルダを開く"        : "Open Folder";
+        public static string CountdownCheckBox    => IsJapanese ? "3秒カウントダウン"      : "3s Countdown";
 
         // Status: mode hints
         public static string StatusInitial => IsJapanese
@@ -50,6 +51,10 @@ namespace MultiMonitorScreenshot
         public static string StatusRecording(string target, string path) => IsJapanese
             ? $"録画中（{target}）: {path}"
             : $"Recording ({target}): {path}";
+
+        public static string StatusCountdown(int secondsLeft) => IsJapanese
+            ? $"📸 {secondsLeft} 秒後に撮影します…"
+            : $"Capturing in {secondsLeft}...";
 
         // Monitor panel labels
         public static string MonitorLabel(int number) => IsJapanese
